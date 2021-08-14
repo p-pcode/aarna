@@ -19,22 +19,66 @@ const minABI = [
 
 const walletAddress = "0xA10D2e55f0f87756D6f99960176120C512Eb3E15";
 
-async function getBalance(crypto,index) {
-  try {
-    var contract = new web3Client.eth.Contract(minABI, crypto.address);
-    var result = await contract.methods.balanceOf(walletAddress).call();
-    if(result > 0){
-      console.log(
-          `${crypto.symbol}  ${index}  ${(result * Math.pow(10, -1 * parseInt(+crypto.decimals))).toFixed(2)}`
-        );
-    }
-  } catch(e) {
-    // console.log(crypto.symbol, index)
-    console.log(`${crypto.symbol} \n` )
-  } 
+function tokenAddress(crypto) {
+  var cryptos = {
+    Ohm: {
+      contract: "0x383518188C0C6d7730D91b2c03a03C837814a899",
+      decimalPoint: "9",
+    },
+    Dai: {
+      contract: "0x6b175474e89094c44da98b954eedeac495271d0f",
+      decimalPoint: "18",
+    },
+    USDT: {
+      contract: "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+      decimalPoint: "6",
+    },
+    Matic: {
+      contract: "0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0",
+      decimalPoint: "18",
+    },
+    Sushi: {
+      contract: "0x6b3595068778dd592e39a122f4f5a5cf09c90fe2",
+      decimalPoint: "18",
+    },
+    SushiBar: {
+      contract: "0x8798249c2e607446efb7ad49ec89dd1865ff4272",
+      decimalPoint: "18",
+    },
+    Weth: {
+      contract: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+      decimalPoint: "18",
+    },
+    UST: {
+      contract: "0xa47c8bf37f92abed4a126bda807a7b7498661acd",
+      decimalPoint: "18",
+    },
+  };
+  return cryptos[crypto];
 }
 
+async function getBalance(crypto) {
+  // console.log(tokenAddress(crypto).contract);
+  var thisCrypto = tokenAddress(crypto);
+  var contract = new web3Client.eth.Contract(minABI, thisCrypto.contract);
+  var result = await contract.methods.balanceOf(walletAddress).call();
+  console.log(
+    crypto +
+      "= " +
+      (result * Math.pow(10, -1 * parseInt(thisCrypto.decimalPoint))).toFixed(2)
+  );
+}
 
+const cryptoArr = [
+  "Ohm",
+  "Dai",
+  "USDT",
+  "Matic",
+  "Sushi",
+  "SushiBar",
+  "Weth",
+  "UST",
+];
 
 //print all curent tokens excluding liquidity pool tokens
 async function getEther() {
@@ -46,11 +90,8 @@ async function getEther() {
 getEther();
 
 console.log("Assets : ");
-let count = 1;
 for(let asset in assets) {
-  // console.log(assets[asset].address)
-  getBalance(assets[asset], count)
-  count+=1
+  
 }
 
 // var currentBlock = web3Client.eth.blockNumber;
