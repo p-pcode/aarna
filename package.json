@@ -11,7 +11,9 @@
   "dependencies": {
     "axios": "^0.21.1",
     "body-parser": "^1.19.0",
+    "bytebuffer": "^5.0.1",
     "cors": "^2.8.5",
+    "ethereum-input-data-decoder": "^0.3.2",
     "express": "^4.17.1",
     "web3": "^1.5.1"
   },
